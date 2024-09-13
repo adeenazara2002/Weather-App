@@ -36,49 +36,7 @@ class _ForecastState extends State<Forecast> {
               height: 70,
             ),
 
-            // Row(
-            //   children: [
-            //     Padding(
-            //       padding: const EdgeInsets.only(
-            //         left: 25,
-            //       ),
-            //       child: Container(
-            //         height: 55,
-            //         width: 310,
-            //         decoration: BoxDecoration(
-            //           borderRadius: BorderRadius.circular(12),
-            //           border: Border.all(
-            //             color: Colors.white,
-            //           ),
-            //         ),
-            //         child: TextField(
-            //           // controller: _searchController,
-            //           decoration: InputDecoration(
-            //             prefixIcon: Icon(
-            //               Icons.search,
-            //               color: Colors.white,
-            //               size: 25,
-            //             ),
-            //             hintText: 'Search city or country',
-            //             hintStyle: TextStyle(
-            //               color: Colors.white,
-            //               fontSize: 15,
-            //               fontWeight: FontWeight.w400,
-            //             ),
-            //             border: InputBorder.none,
-            //             contentPadding: EdgeInsets.symmetric(
-            //               vertical: 20.0,
-            //               horizontal: 20.0,
-            //             ),
-            //           ),
-            //           style: TextStyle(
-            //             color: Colors.white,
-            //           ),
-            //         ),
-            //       ),
-            //     ),
-            //   ],
-            // ),
+           
             // === TEXT ROW ===
             SizedBox(
               height: 20,

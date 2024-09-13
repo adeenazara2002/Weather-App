@@ -18,13 +18,44 @@ class _HomeState extends State<Home> {
     getWeatherData(city); // Fetch weather for Karachi on app start
   }
 
+  // Function to get the weather icon based on the icon code from the API
+  String getWeatherIcon(String iconCode) {
+    return 'http://openweathermap.org/img/wn/$iconCode@2x.png';
+  }
+
+  String getCurrentDate() {
+    final DateTime now = DateTime.now();
+    return '${now.day}/${now.month}/${now.year}'; // Format to your preference
+  }
+
+  List<Widget> buildForecast() {
+    if (weatherData == null || weatherData!['daily'] == null) {
+      return [Text('No forecast available')]; // Handle null case
+    }
+
+    return List.generate(7, (index) {
+      final day = weatherData!['daily'][index]; // Access each day's forecast
+      final temp = day['temp']['day'];
+      final time = DateTime.fromMillisecondsSinceEpoch(day['dt'] * 1000);
+
+      return Column(
+        children: [
+          Text('${temp.toStringAsFixed(1)}°C',
+              style: TextStyle(color: Colors.white)),
+          Image.network(getWeatherIcon(day['weather'][0]['icon'])),
+          Text('${time.hour}:00', style: TextStyle(color: Colors.white)),
+        ],
+      );
+    });
+  }
+
   // Fetch the weather and update the state
   void getWeatherData(String cityName) async {
     setState(() {
       isLoading = true;
     });
     try {
-      final data = await fetchWeather(cityName);
+      final data = await fetchWeather(cityName, forecast: true);
       setState(() {
         weatherData = data;
         isLoading = false;
@@ -123,13 +154,14 @@ class _HomeState extends State<Home> {
                       Row(
                         children: [
                           Padding(padding: EdgeInsets.only(left: 120)),
-                          Image.asset('assets/images/smallCloud.png'),
+                          Image.network(getWeatherIcon(
+                              weatherData!['weather'][0]['icon'])),
                         ],
                       ),
-                      SizedBox(height: 10),
+                      // SizedBox(height: 10),
                       Row(
                         children: [
-                          Padding(padding: EdgeInsets.only(left: 150)),
+                          Padding(padding: EdgeInsets.only(left: 130)),
                           Text(
                             '${weatherData!['main']['temp']}°C',
                             style: TextStyle(
@@ -142,20 +174,24 @@ class _HomeState extends State<Home> {
                       ),
                       Row(
                         children: [
-                          Padding(padding: EdgeInsets.only(left: 120)),
-                          Text(
-                            weatherData!['weather'][0]['description'],
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w400,
+                          Expanded(
+                            child: Text(
+                              weatherData!['weather'][0]['description'],
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w400,
+                              ),
+                              textAlign:
+                                  TextAlign.center, // Always center the text
                             ),
                           ),
                         ],
                       ),
+
                       Row(
                         children: [
-                          Padding(padding: EdgeInsets.only(left: 90)),
+                          Padding(padding: EdgeInsets.only(left: 50)),
                           Text(
                             'Max: ${weatherData!['main']['temp_max']}°C ',
                             style: TextStyle(
@@ -177,16 +213,14 @@ class _HomeState extends State<Home> {
                       ),
                     ],
                   ),
-                SizedBox(height: 20),
+                SizedBox(height: 30),
                 // Additional UI elements...
-
                 Row(
                   children: [
                     Padding(padding: EdgeInsets.only(left: 60)),
                     Image.asset('assets/images/house.png'),
                   ],
                 ),
-
                 // ==== CONTAINER ====
                 Row(
                   children: [
@@ -212,221 +246,44 @@ class _HomeState extends State<Home> {
                             color: Color.fromRGBO(108, 74, 171, 1.0),
                           ),
                         ),
-                        child: Stack(
+                        child: Column(
                           children: [
-                            Column(
+                            SizedBox(height: 20),
+                            Row(
                               children: [
-                                SizedBox(height: 20),
-                                Row(
-                                  children: [
-                                    Padding(padding: EdgeInsets.only(left: 40)),
-                                    Text(
-                                      'Today',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    ),
-                                    Padding(
-                                        padding: EdgeInsets.only(left: 160)),
-                                    Text(
-                                      'July, 21',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 10),
-                                Divider(
-                                  color: Colors.grey,
-                                  thickness: 1,
-                                  // indent: 40, // Space from the left
-                                  // endIndent: 40, // Space from the right
-                                ),
-
-                                // === scrollable container ===
-                                Container(
-                                  child: SingleChildScrollView(
-                                    scrollDirection: Axis.horizontal,
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment
-                                          .start, // Align all to the start
-                                      children: [
-                                        // First Row
-                                        Row(
-                                          children: [
-                                            SizedBox(width: 35),
-                                            Text(
-                                              '19 C',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                            ),
-                                            SizedBox(width: 40),
-                                            Text(
-                                              '19 C',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                            ),
-                                            SizedBox(width: 40),
-                                            Text(
-                                              '19 C',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                            ),
-                                            SizedBox(width: 40),
-                                            Text(
-                                              '19 C',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                            ),
-                                            SizedBox(width: 40),
-                                            Text(
-                                              '19 C',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                            ),
-                                            SizedBox(width: 40),
-                                            Text(
-                                              '19 C',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                            ),
-                                            SizedBox(width: 40),
-                                            Text(
-                                              '19 C',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-
-                                        // === SECOND ROW (Image Row) ===
-                                        SizedBox(height: 10),
-                                        Row(
-                                          children: [
-                                            SizedBox(width: 30),
-                                            Image.asset(
-                                                'assets/images/moonCloud.png'),
-                                            SizedBox(width: 30),
-                                            Image.asset(
-                                                'assets/images/moonCloud.png'),
-                                            SizedBox(width: 30),
-                                            Image.asset(
-                                                'assets/images/moonCloud.png'),
-                                            SizedBox(width: 30),
-                                            Image.asset(
-                                                'assets/images/moonCloud.png'),
-                                            SizedBox(width: 40),
-                                            Image.asset(
-                                                'assets/images/moonCloud.png'),
-                                            SizedBox(width: 30),
-                                            Image.asset(
-                                                'assets/images/moonCloud.png'),
-                                            SizedBox(width: 30),
-                                            Image.asset(
-                                                'assets/images/moonCloud.png'),
-                                          ],
-                                        ),
-
-                                        // === THIRD ROW (Time Row) ===
-                                        SizedBox(height: 10),
-                                        Row(
-                                          children: [
-                                            SizedBox(width: 30),
-                                            Text(
-                                              '15:00',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                            ),
-                                            SizedBox(width: 30),
-                                            Text(
-                                              '15:00',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                            ),
-                                            SizedBox(width: 30),
-                                            Text(
-                                              '15:00',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                            ),
-                                            SizedBox(width: 30),
-                                            Text(
-                                              '15:00',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                            ),
-                                            SizedBox(width: 35),
-                                            Text(
-                                              '15:00',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                            ),
-                                            SizedBox(width: 30),
-                                            Text(
-                                              '15:00',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                            ),
-                                            SizedBox(width: 25),
-                                            Text(
-                                              '15:00',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
+                                Padding(padding: EdgeInsets.only(left: 40)),
+                                Text(
+                                  'Today',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w400,
                                   ),
-                                )
+                                ),
+                                Padding(padding: EdgeInsets.only(left: 140)),
+                                Text(
+                                  getCurrentDate(),
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
                               ],
+                            ),
+                            SizedBox(height: 10),
+                            Divider(
+                              color: Colors.grey,
+                              thickness: 1,
+                            ),
+                            // === scrollable container ===
+                            Expanded(
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  children: buildForecast(),
+                                ),
+                              ),
                             ),
                           ],
                         ),
